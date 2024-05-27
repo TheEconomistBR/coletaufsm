@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Dados de Preços CIPM - UFSM/PM{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">Dados de Preços CIPM</h1>
+<form method="post" class="form-inline mb-4">
+    <div class="form-group mr-3">
+        <label for="supermercado" class="mr-2">Supermercado:</label>
+        <select id="supermercado" name="supermercado" class="form-control">
+            <option value="">Todos</option>
+            {% for supermercado in supermercados %}
+            <option value="{{ supermercado.id }}">{{ supermercado.nome }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group mr-3">
+        <label for="data_coleta" class="mr-2">Data da Coleta:</label>
+        <input type="date" id="data_coleta" name="data_coleta" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+</form>
+
+{% if data %}
+<table class="table table-striped mt-4">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Supermercado</th>
+            <th>Produto</th>
+            <th>Preço</th>
+            <th>Data da Coleta</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row['id'] }}</td>
+            <td>{{ row['supermercado'] }}</td>
+            <td>{{ row['produto'] }}</td>
+            <td>{{ row['preco'] }}</td>
+            <td>{{ row['data_coleta'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Botão para baixar o CSV -->
+<form action="/download_csv" method="post">
+    <input type="hidden" name="supermercado" value="{{ request.form.supermercado }}">
+    <input type="hidden" name="data_coleta" value="{{ request.form.data_coleta }}">
+    <button type="submit">Baixar CSV</button>
+</form>
+{% else %}
+<p>Não há dados disponíveis para os filtros selecionados.</p>
+{% endif %}
+{% endblock %}
